@@ -9,19 +9,37 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <repositories>
+        <repository>
+            <id>nexus-aliyun</id>
+            <name>Nexus aliyun</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>zy-repository</id>
+            <name>zy's repository</name>
+            <url>https://raw.githubusercontent.com/streetpoetp/repository/master/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <profiles>
         <profile>
             <id>prod</id>
-            <properties>
-                <mongo>mongodb://topnews:Top492News@106.75.222.67:27017/topnews</mongo>
-                <bucket>video</bucket>
-                <bucketHost>http://pdjs8bk6i.bkt.clouddn.com/</bucketHost>
-            </properties>
             <build>
                 <resources>
                     <resource>
                         <directory>${basedir}/src/main/resources</directory>
                         <targetPath>${project.build.outputDirectory}/</targetPath>
+                        <excludes>
+                            <exclude>*-test.xml</exclude>
+                        </excludes>
+                    </resource>
+                    <resource>
+                        <directory>${basedir}/target/maven-shared-archive-resources</directory>
                         <excludes>
                             <exclude>*-test.xml</exclude>
                         </excludes>
@@ -40,6 +58,12 @@
                             <exclude>*-test.xml</exclude>
                         </excludes>
                     </resource>
+                    <resource>
+                        <directory>${basedir}/target/maven-shared-archive-resources</directory>
+                        <excludes>
+                            <exclude>*-test.xml</exclude>
+                        </excludes>
+                    </resource>
                 </resources>
             </build>
         </profile>
@@ -54,23 +78,14 @@
                         <directory>${basedir}/src/main/resources</directory>
                         <targetPath>${project.build.outputDirectory}/</targetPath>
                     </resource>
+                    <resource>
+                        <directory>${basedir}/target/maven-shared-archive-resources</directory>
+                        <targetPath>${project.build.outputDirectory}/</targetPath>
+                    </resource>
                 </resources>
             </build>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>nexus-aliyun</id>
-            <name>Nexus aliyun</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>zy-repository</id>
-            <name>zy's repository</name>
-            <url>https://raw.githubusercontent.com/streetpoetp/repository/master/</url>
-        </repository>
-    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,6 +93,34 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.24</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.7</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -121,7 +164,7 @@
                         </goals>
                         <configuration>
                             <outputFile>
-                                ${project.build.outputDirectory}/conf.properties
+                                ${project.build.outputDirectory}/env.properties
                             </outputFile>
                         </configuration>
                     </execution>
@@ -155,6 +198,25 @@
                             <goal>site</goal>
                         </goals>
                         <phase>deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>process-remote-resources</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>zy:resources:1.0-SNAPSHOT</resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                        </configuration>
+                        <phase>generate-resources</phase>
                     </execution>
                 </executions>
             </plugin>
