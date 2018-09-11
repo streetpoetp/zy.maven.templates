@@ -9,6 +9,56 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <mongo>mongodb://topnews:Top492News@106.75.222.67:27017/topnews</mongo>
+                <bucket>video</bucket>
+                <bucketHost>http://pdjs8bk6i.bkt.clouddn.com/</bucketHost>
+            </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>${basedir}/src/main/resources</directory>
+                        <targetPath>${project.build.outputDirectory}/</targetPath>
+                        <excludes>
+                            <exclude>*-test.xml</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>qa</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>${basedir}/src/main/resources</directory>
+                        <targetPath>${project.build.outputDirectory}/</targetPath>
+                        <excludes>
+                            <exclude>*-test.xml</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>${basedir}/src/main/resources</directory>
+                        <targetPath>${project.build.outputDirectory}/</targetPath>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>nexus-aliyun</id>
@@ -76,7 +126,7 @@
                     <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>  <!-- matches distribution management repository url above -->
                     <branch>refs/heads/master</branch>                                      <!-- remote branch name -->
                     <includes><include>**/*</include></includes>
-                    <repositoryName>repository</repositoryName>                                    <!-- github repo name -->
+                    <repositoryName>repository</repositoryName>                             <!-- github repo name -->
                     <repositoryOwner>streetpoetp</repositoryOwner>                          <!-- github username  -->
                     <merge>true</merge>
                 </configuration>
